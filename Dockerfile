@@ -68,7 +68,7 @@ RUN mkdir -p $GAME_DIR \
     && wget -q https://files.gamebanana.com/maps/_7136-.zip -O $GAME_DIR/awp_snowsk337.zip \
     && unzip -o $GAME_DIR/awp_snowsk337.zip -d $GAME_DIR \
 
-    ## Modify our SERVER.CFG file to include somne modifiers
+    ## Modify our SERVER.CFG file to include some modifiers
     && echo -e "\nsys_ticrate 1000 \
        \nsv_timeout 90 \
        \nfps_max 500 \
