@@ -1,0 +1,14 @@
+services:
+  - docker
+
+env:
+  - DOCKER_REPO_SLUG=netwarlan/cs16-snowsk337
+
+script:
+  - docker build -t $DOCKER_REPO_SLUG:latest .
+  - if [[ $TRAVIS_TAG = $TRAVIS_BRANCH ]]; then docker build -t $DOCKER_REPO_SLUG:$TRAVIS_BRANCH .; else true ; fi
+
+after_success:
+  - docker login -u="$docker_username" -p="$docker_password"
+  - if [[ $TRAVIS_BRANCH = master ]]; then docker push $DOCKER_REPO_SLUG:latest; else true; fi
+  - if [[ $TRAVIS_TAG = $TRAVIS_BRANCH ]]; then docker push $DOCKER_REPO_SLUG:$TRAVIS_TAG; else true ; fi
