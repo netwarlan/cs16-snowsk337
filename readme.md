@@ -1,7 +1,5 @@
 Counter-Strike 1.6 | SnowSK337
 ==============================
-[![Build Status](https://travis-ci.org/netwarlan/cs16-snowsk337.svg?branch=master)](https://travis-ci.org/netwarlan/cs16-snowsk337)
-
 The following repo contains the source files for building a Counter-Strike 1.6 Server with loading of the famous AMP_SNOWSk337 map.
 In order to increase performance of your client, add the following commands into your in-game console:
 ```
