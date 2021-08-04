@@ -41,13 +41,10 @@ RUN apt-get update \
     && mkdir -p $STEAMCMD_DIR \
 
     ## Create our User
-    && useradd -ms /bin/bash $GAME_USER
-
-## Copy our run script into the image
-COPY run.sh $GAME_DIR/run.sh
+    && useradd -ms /bin/bash $GAME_USER \
 
     ## Set Directory Permissions
-RUN chown -R $GAME_USER:$GAMEUSER $GAME_DIR \
+    && chown -R $GAME_USER:$GAMEUSER $GAME_DIR \
     && chown -R $GAME_USER:$GAMEUSER $STEAMCMD_DIR
 
 ## Change to our User
@@ -100,6 +97,9 @@ RUN curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar 
 
     ## Flatten permissions
     && chmod -R ug+rwx ~
+
+## Copy our run script into the image
+COPY run.sh $GAME_DIR/run.sh
 
 ## Set working directory
 WORKDIR $GAME_DIR
