@@ -1,48 +1,67 @@
-FROM centos:latest
+## Pull our base image
+FROM ubuntu:18.04
 
-## Update our container and install a few packages
-RUN yum update -y \
-    && yum install -y \
-       curl \
-       glibc.i686 \
-       libstdc++.i686 \
-       unzip \
-       wget \
-    && yum clean all
+## Image Information
+LABEL maintainer="Jeff Nelson <jeff@netwar.org>"
+ARG DEBIAN_FRONTEND=noninteractive
 
-## Create Environment Variables
-## Game Specific
-ENV GAME="cstrike" \
-    USER="steam" \
-    GAME_DIR="/docker/cstrike" \
-
-## SteamCMD Specific
+## Set Build Arguments
+ENV GAME_DIR="/app/cstrike" \
+    GAME_USER="steam" \
     STEAMCMD_APP="90" \
     STEAMCMD_USER="anonymous" \
     STEAMCMD_PASSWORD="" \
     STEAMCMD_AUTH_CODE="" \
-    STEAMCMD_DIR="/docker/steamcmd"
+    STEAMCMD_DIR="/app/steamcmd"
 
-## Setup USER and HOME directory
-RUN useradd -m -d /docker $USER -s /bin/bash
+## Start building our server
+RUN dpkg --add-architecture i386
+RUN apt-get update \
+    && apt-get install -y \
+        curl \
+        lib32gcc1 \
+        lib32ncurses5 \
+        lib32stdc++6 \
+        lib32tinfo5 \
+        lib32z1 \
+        libc6:i386 \
+        libcurl3-gnutls:i386 \
+        libncurses5 \
+        libncurses5:i386 \
+        libstdc++6:i386 \
+        zlib1g:i386 \
+        libsdl2-2.0-0:i386 \
+        unzip \
+        wget \
+    && apt-get clean \
+    && rm -rf /var/tmp/* /var/lib/apt/lists/* /tmp/* \
 
-## Change USER
-USER $USER
-
-## Create base folders
-RUN mkdir -p $GAME_DIR \
+    ## Create Directory Structure
+    && mkdir -p $GAME_DIR \
     && mkdir -p $STEAMCMD_DIR \
 
-    ## Download SteamCMD
-    && curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -xzC $STEAMCMD_DIR \
+    ## Create our User
+    && useradd -ms /bin/bash $GAME_USER
+
+## Copy our run script into the image
+COPY run.sh $GAME_DIR/run.sh
+
+    ## Set Directory Permissions
+RUN chown -R $GAME_USER:$GAMEUSER $GAME_DIR \
+    && chown -R $GAME_USER:$GAMEUSER $STEAMCMD_DIR
+
+## Change to our User
+USER $GAME_USER
+
+## Download SteamCMD
+RUN curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -xzC $STEAMCMD_DIR \
     && $STEAMCMD_DIR/steamcmd.sh \
         +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
         +force_install_dir $GAME_DIR \
-        +app_update $STEAMCMD_APP \
-        +app_set_config $STEAMCMD_APP mod $GAME validate \
+        +app_update $STEAMCMD_APP validate \
         +quit \
 
-    ## Currently, there is an HLSW Bug, so we need to manually download the manifests for STEAMCMD
+        ## Currently, there is an HLSW Bug, so we need to manually download the manifests for STEAMCMD
     || rm -rf $GAME_DIR/steamapps/* \
     && for i in 10 70 90; do wget -q https://raw.githubusercontent.com/dgibbs64/HLDS-appmanifest/master/CounterStrike/appmanifest_$i.acf -O ~/Steam/steamapps/appmanifest_$i.acf; done \
     && $STEAMCMD_DIR/steamcmd.sh \
@@ -65,7 +84,7 @@ RUN mkdir -p $GAME_DIR \
     && rm -rf $GAME_DIR/cstrike/maps/* \
 
     ## Download AWP_SNOWSK337 map and extract
-    && wget -q https://files.gamebanana.com/maps/_7136-.zip -O $GAME_DIR/awp_snowsk337.zip \
+    && wget -q https://files.gamebanana.com/mods/_7136-.zip -O $GAME_DIR/awp_snowsk337.zip \
     && unzip -o $GAME_DIR/awp_snowsk337.zip -d $GAME_DIR \
 
     ## Modify our SERVER.CFG file to include some modifiers
@@ -82,9 +101,8 @@ RUN mkdir -p $GAME_DIR \
     ## Flatten permissions
     && chmod -R ug+rwx ~
 
-## Set working directory and normal start up process
+## Set working directory
 WORKDIR $GAME_DIR
 
-## Start here
-ENTRYPOINT ["./start.sh"]
-CMD ["+map", "awp_snowsk337", "+maxplayers", "32"]
+## Start the run script
+CMD ["bash", "run.sh"]

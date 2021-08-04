@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t cs16-snowsk337 .
+docker build -t netwarlan/cs16-snowsk337 .
