@@ -18,30 +18,25 @@ To run the container, issue the following example command:
 docker run -it \
 -p 27015:27015/udp \
 -p 27015:27015/tcp \
--e CS16_SERVER_HOSTNAME="DOCKER CS16 SNOWSK337" \
+-e CS16_SERVER_HOSTNAME="DOCKER SNOWSK337" \
+-e CS16_SERVER_UPDATE_ON_START=true \
 netwarlan/cs16-snowsk337
 ```
+
+If saving container data to a shared volume, you can set `CS16_SERVER_UPDATE_ON_START` to `false` to speed up the container start time. Due to the bugs in SteamCMD for this game, it can take several minutes to update with the external manifests.
+
 
 ### Environment Variables
 We can make dynamic changes to our CS16 containers by adjusting some of the environment variables passed to our image.
 Below are the ones currently supported and their (defaults):
 
-```
-CS16_SERVER_PORT (27015)
-CS16_SERVER_MAXPLAYERS (32)
-CS16_SERVER_MAP (awp_snowsk337)
-CS16_SERVER_HOSTNAME (SnowSk337 Server)
-CS16_SERVER_PW (No password set)
-CS16_SERVER_RCONPW (No password set)
-CS16_SERVER_UPDATE_ON_START (false)
-```
-
-#### Descriptions
-
-* `CS16_SERVER_PORT` Determines the port our container runs on.
-* `CS16_SERVER_MAXPLAYERS` Determines the max number of players the * server will allow.
-* `CS16_SERVER_MAP` Determines the starting map.
-* `CS16_SERVER_HOSTNAME` Determines the name of the server.
-* `CS16_SERVER_PW` Determines the password needed to join the server.
-* `CS16_SERVER_RCONPW` Determines the RCON password needed to administer the server.
-* `CS16_SERVER_UPDATE_ON_START` Determines whether the server should update itself to latest when the container starts up.
+Environment Variable | Default Value
+-------------------- | -------------
+CS16_SERVER_PORT | 27015
+CS16_SERVER_MAXPLAYERS | 32
+CS16_SERVER_MAP | awp_snowsk337
+CS16_SERVER_HOSTNAME | SnowSk337 Server
+CS16_SVLAN | 0
+CS16_SERVER_PW | No password set
+CS16_SERVER_RCONPW | No password set
+CS16_SERVER_UPDATE_ON_START | false

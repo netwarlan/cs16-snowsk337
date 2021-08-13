@@ -5,7 +5,7 @@ echo "
 
 ╔═══════════════════════════════════════════════╗
 ║                                               ║
-║       _  _____________      _____   ___       ║  
+║       _  _____________      _____   ___       ║
 ║      / |/ / __/_  __/ | /| / / _ | / _ \      ║
 ║     /    / _/  / /  | |/ |/ / __ |/ , _/      ║
 ║    /_/|_/___/ /_/   |__/|__/_/ |_/_/|_|       ║
@@ -17,56 +17,114 @@ echo "
 ║ github issue. Thanks!                         ║
 ║                                               ║
 ║ For more information:                         ║
-║ https://github.com/netwarlan                  ║
+║ github.com/netwarlan                          ║
 ╚═══════════════════════════════════════════════╝
 "
 
-## Startup
+
+## Set default values if none were provided
+## ==============================================
 [[ -z "$CS16_SERVER_PORT" ]] && CS16_SERVER_PORT="27015"
 [[ -z "$CS16_SERVER_MAXPLAYERS" ]] && CS16_SERVER_MAXPLAYERS="32"
 [[ -z "$CS16_SERVER_MAP" ]] && CS16_SERVER_MAP="awp_snowsk337"
-
-## Config
+[[ -z "$CS16_SVLAN" ]] && CS16_SVLAN="0"
 [[ -z "$CS16_SERVER_HOSTNAME" ]] && CS16_SERVER_HOSTNAME="SnowSk337 Server"
 [[ ! -z "$CS16_SERVER_PW" ]] && CS16_SERVER_PW="sv_password $CS16_SERVER_PW"
 [[ ! -z "$CS16_SERVER_RCONPW" ]] && CS16_SERVER_RCONPW="rcon_password $CS16_SERVER_RCONPW"
+[[ -z "$CS16_SERVER_UPDATE_ON_START" ]] && CS16_SERVER_UPDATE_ON_START=false
 
-cat <<EOF >$GAME_DIR/cstrike/server.cfg
-hostname "$CS16_SERVER_HOSTNAME"
+
+
+## Update on startup
+## ==============================================
+if [[ "$CS16_SERVER_UPDATE_ON_START" = true ]]; then
+echo "
+╔═══════════════════════════════════════════════╗
+║ Checking for updates                          ║
+╚═══════════════════════════════════════════════╝
+"
+
+  ## Start downloading game
+  $STEAMCMD_DIR/steamcmd.sh \
+  +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
+  +force_install_dir $GAME_DIR \
+  +app_update $STEAMCMD_APP \
+  +quit
+
+  ## Currently, there is a STEAMCMD bug so we need to get the complete manifests
+  echo "Deleting steamapps..."
+  rm -rf $GAME_DIR/steamapps/*
+
+  ## Download the complete manifests
+  for i in 10 70 90; do 
+    echo "Downloading App Manifest $i"
+    wget -q https://raw.githubusercontent.com/dgibbs64/HLDS-appmanifest/master/CounterStrike/appmanifest_$i.acf -O ~/Steam/steamapps/appmanifest_$i.acf
+  done
+
+  ## Re-attempt game download with correct manifests
+  $STEAMCMD_DIR/steamcmd.sh \
+  +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
+  +force_install_dir $GAME_DIR \
+  +app_set_config $STEAMCMD_APP mod cstrike \
+  +app_update $STEAMCMD_APP validate \
+  +quit \
+
+
+  ## Downloading SnowSk337 Map
+  ## ==============================================
+  echo "
+  ╔═══════════════════════════════════════════════╗
+  ║ Downloading SnowSk337 Map                     ║
+  ╚═══════════════════════════════════════════════╝
+  "
+  echo "Deleting all other maps..."
+  rm -rf $GAME_DIR/cstrike/maps/*
+
+  MAP_DOWNLOAD_URL="https://files.gamebanana.com/mods/_7136-.zip"
+  wget -q $MAP_DOWNLOAD_URL -O $GAME_DIR/awp_snowsk337.zip
+  unzip -o $GAME_DIR/awp_snowsk337.zip -d $GAME_DIR
+  echo "awp_snowsk337" > $GAME_DIR/mapcycle.txt
+
+fi
+
+
+
+
+## Build server config
+## ==============================================
+echo "
+╔═══════════════════════════════════════════════╗
+║ Building server config                        ║
+╚═══════════════════════════════════════════════╝
+"
+cat <<EOF > $GAME_DIR/cstrike/server.cfg
 $CS16_SERVER_PW
 $CS16_SERVER_RCONPW
+sys_ticrate 1000
+nsv_timeout 90
+nfps_max 500
+nsv_maxrate 25000
+nsv_minrate 4500
+nsv_maxupdaterate 101
 EOF
 
 
-## Update
-if [[ "$CS16_SERVER_UPDATE_ON_START" = true ]];
-then
-echo "
-╔═══════════════════════════════════════════════╗
-║ Checking for Updates                          ║
-╚═══════════════════════════════════════════════╝
-"
-$STEAMCMD_DIR/steamcmd.sh \
-+login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
-+force_install_dir $GAME_DIR \
-+app_update $STEAMCMD_APP validate \
-+quit
 
-echo "
-╔═══════════════════════════════════════════════╗
-║ SERVER up to date                             ║
-╚═══════════════════════════════════════════════╝
-"
-fi
+
+
 
 ## Run
+## ==============================================
 echo "
 ╔═══════════════════════════════════════════════╗
-║ Starting SERVER                               ║
+║ Starting server                               ║
 ╚═══════════════════════════════════════════════╝
   Hostname: $CS16_SERVER_HOSTNAME
   Port: $CS16_SERVER_PORT
   Max Players: $CS16_SERVER_MAXPLAYERS
   Map: $CS16_SERVER_MAP
 "
-$GAME_DIR/hlds_run -game cstrike -console -usercon +port $CS16_SERVER_PORT +maxplayers $CS16_SERVER_MAXPLAYERS +map $CS16_SERVER_MAP +sv_lan 1 
+
+## Game needs launched in the same directory as hlds_linux
+cd $GAME_DIR
+./hlds_run -game cstrike -console -usercon +hostname \"$CS16_SERVER_HOSTNAME\" +port $CS16_SERVER_PORT +maxplayers $CS16_SERVER_MAXPLAYERS +map $CS16_SERVER_MAP +sv_lan $CS16_SVLAN
