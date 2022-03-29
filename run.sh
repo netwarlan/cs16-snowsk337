@@ -32,6 +32,7 @@ echo "
 [[ ! -z "$CS16_SERVER_PW" ]] && CS16_SERVER_PW="sv_password $CS16_SERVER_PW"
 [[ ! -z "$CS16_SERVER_RCONPW" ]] && CS16_SERVER_RCONPW="rcon_password $CS16_SERVER_RCONPW"
 [[ -z "$CS16_SERVER_UPDATE_ON_START" ]] && CS16_SERVER_UPDATE_ON_START=false
+[[ ! -z "$CS16_SERVER_FASTDOWNLOAD_URL" ]] && CS16_SERVER_FASTDOWNLOAD_URL="sv_downloadurl \"$CS16_SERVER_FASTDOWNLOAD_URL\""
 
 
 
@@ -46,8 +47,8 @@ echo "
 
   ## Start downloading game
   $STEAMCMD_DIR/steamcmd.sh \
-  +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
   +force_install_dir $GAME_DIR \
+  +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
   +app_update $STEAMCMD_APP \
   +quit
 
@@ -63,8 +64,8 @@ echo "
 
   ## Re-attempt game download with correct manifests
   $STEAMCMD_DIR/steamcmd.sh \
-  +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
   +force_install_dir $GAME_DIR \
+  +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
   +app_set_config $STEAMCMD_APP mod cstrike \
   +app_update $STEAMCMD_APP validate \
   +quit \
@@ -106,10 +107,22 @@ nfps_max 500
 nsv_maxrate 25000
 nsv_minrate 4500
 nsv_maxupdaterate 101
+$CS16_SERVER_FASTDOWNLOAD_URL
+sv_allowdownload 1
+sv_allowupload 1
 EOF
 
 
 
+
+## Print Variables
+## ==============================================
+echo "
+╔═══════════════════════════════════════════════╗
+║ Server set with provided values               ║
+╚═══════════════════════════════════════════════╝
+"
+printenv | grep CS16
 
 
 
@@ -117,12 +130,8 @@ EOF
 ## ==============================================
 echo "
 ╔═══════════════════════════════════════════════╗
-║ Starting server                               ║
+║ Starting SERVER                               ║
 ╚═══════════════════════════════════════════════╝
-  Hostname: $CS16_SERVER_HOSTNAME
-  Port: $CS16_SERVER_PORT
-  Max Players: $CS16_SERVER_MAXPLAYERS
-  Map: $CS16_SERVER_MAP
 "
 
 ## Game needs launched in the same directory as hlds_linux
