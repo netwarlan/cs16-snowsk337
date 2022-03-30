@@ -102,11 +102,11 @@ cat <<EOF > $GAME_DIR/cstrike/server.cfg
 $CS16_SERVER_PW
 $CS16_SERVER_RCONPW
 sys_ticrate 1000
-nsv_timeout 90
-nfps_max 500
-nsv_maxrate 25000
-nsv_minrate 4500
-nsv_maxupdaterate 101
+sv_timeout 90
+fps_max 500
+sv_maxrate 25000
+sv_minrate 4500
+sv_maxupdaterate 101
 $CS16_SERVER_FASTDOWNLOAD_URL
 sv_allowdownload 1
 sv_allowupload 1
