@@ -20,7 +20,7 @@ docker run -it \
 -p 27015:27015/tcp \
 -e CS16_SERVER_HOSTNAME="DOCKER SNOWSK337" \
 -e CS16_SERVER_UPDATE_ON_START=true \
-netwarlan/cs16-snowsk337
+ghcr.io/netwarlan/cs16-snowsk337
 ```
 
 If saving container data to a shared volume, you can set `CS16_SERVER_UPDATE_ON_START` to `false` to speed up the container start time. Due to the bugs in SteamCMD for this game, it can take several minutes to update with the external manifests.
