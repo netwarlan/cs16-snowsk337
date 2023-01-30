@@ -1,3 +1,3 @@
 #!/bin/zsh
 
-docker build -t netwarlan/cs16-snowsk337 .
+docker build -t ghcr.io/netwarlan/cs16-snowsk337 .
