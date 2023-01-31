@@ -1,11 +1,12 @@
 name: Build
-on: 
-  push
+on:
+  push:
+  workflow_dispatch:
 
 env:
   registry: ghcr.io/netwarlan
   image: cs16-snowsk337
-  tag: latest
+  branch: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   build-and-publish:
@@ -21,7 +22,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Branch Tagging
+        if: ${{ env.branch == 'main' }}
+        run: |
+          echo "branch=latest" >> $GITHUB_ENV
+
       - name: Build and Publish Image
         run: |
-          docker build . --tag ${{ env.registry }}/${{ env.image }}:${{ env.tag }}
-          docker push ${{ env.registry }}/${{ env.image }}:${{ env.tag }}
+          docker build . --tag ${{ env.registry }}/${{ env.image }}:${{ env.branch }}
+          docker push ${{ env.registry }}/${{ env.image }}:${{ env.branch }}
