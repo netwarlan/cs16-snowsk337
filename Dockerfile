@@ -1,5 +1,5 @@
 ## Pull our base image
-FROM debian:11
+FROM debian:12-slim
 
 ## Image Information
 LABEL maintainer="Jeff Nelson <jeff@netwar.org>"
