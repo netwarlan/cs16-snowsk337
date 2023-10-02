@@ -16,9 +16,9 @@ ENV APP_DIR="/app" \
     STEAMCMD_DIR="/app/steamcmd"
 
 ## Start building our server
-RUN dpkg --add-architecture i386
-RUN apt-get update \
-    && apt-get install -y \
+RUN dpkg --add-architecture i386 \
+    && apt update \
+    && apt install -y \
         curl \
         lib32gcc-s1 \
         lib32ncurses5-dev \
@@ -31,7 +31,7 @@ RUN apt-get update \
         libcurl3-gnutls:i386 \
         wget \
         unzip \
-    && apt-get clean \
+    && apt clean \
     && rm -rf /var/tmp/* /var/lib/apt/lists/* /tmp/* \
 
     ## Create Directory Structure

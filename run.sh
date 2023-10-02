@@ -81,7 +81,7 @@ echo "
   echo "Deleting all other maps..."
   rm -rf $GAME_DIR/cstrike/maps/*
 
-  MAP_DOWNLOAD_URL="https://files.gamebanana.com/mods/_7136-.zip"
+  MAP_DOWNLOAD_URL="https://raw.githubusercontent.com/netwarlan/map-files/main/compressed/awp_snowsk337.zip"
   wget -q $MAP_DOWNLOAD_URL -O $GAME_DIR/awp_snowsk337.zip
   unzip -o $GAME_DIR/awp_snowsk337.zip -d $GAME_DIR
   echo "awp_snowsk337" > $GAME_DIR/mapcycle.txt
@@ -133,7 +133,12 @@ echo "
 ║ Starting SERVER                               ║
 ╚═══════════════════════════════════════════════╝
 "
-
 ## Game needs launched in the same directory as hlds_linux
 cd $GAME_DIR
-./hlds_run -game cstrike -console -usercon +hostname \"$CS16_SERVER_HOSTNAME\" +port $CS16_SERVER_PORT +maxplayers $CS16_SERVER_MAXPLAYERS +map $CS16_SERVER_MAP +sv_lan $CS16_SVLAN
+
+./hlds_run -game cstrike -console -usercon \
++hostname \"$CS16_SERVER_HOSTNAME\" \
++port $CS16_SERVER_PORT \
++maxplayers $CS16_SERVER_MAXPLAYERS \
++map $CS16_SERVER_MAP \
++sv_lan $CS16_SVLAN
