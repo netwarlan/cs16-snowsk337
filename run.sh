@@ -49,7 +49,7 @@ echo "
   $STEAMCMD_DIR/steamcmd.sh \
   +force_install_dir $GAME_DIR \
   +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
-  +app_update $STEAMCMD_APP \
+  +app_update $STEAMCMD_APP validate \
   +quit
 
   ## Currently, there is a STEAMCMD bug so we need to get the complete manifests
@@ -68,7 +68,7 @@ echo "
   +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
   +app_set_config $STEAMCMD_APP mod cstrike \
   +app_update $STEAMCMD_APP validate \
-  +quit \
+  +quit
 
 
   ## Downloading SnowSk337 Map
