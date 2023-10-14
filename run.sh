@@ -110,6 +110,9 @@ sv_maxupdaterate 101
 $CS16_SERVER_FASTDOWNLOAD_URL
 sv_allowdownload 1
 sv_allowupload 1
+host_name_store 1
+host_info_show 1
+host_players_show 2
 EOF
 
 
