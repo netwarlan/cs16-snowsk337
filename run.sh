@@ -18,8 +18,7 @@ echo "
 ║                                               ║
 ║ For more information:                         ║
 ║ github.com/netwarlan                          ║
-╚═══════════════════════════════════════════════╝
-"
+╚═══════════════════════════════════════════════╝"
 
 
 ## Set default values if none were provided
@@ -42,8 +41,7 @@ if [[ "$CS16_SERVER_UPDATE_ON_START" = true ]]; then
 echo "
 ╔═══════════════════════════════════════════════╗
 ║ Checking for updates                          ║
-╚═══════════════════════════════════════════════╝
-"
+╚═══════════════════════════════════════════════╝"
 
   ## Start downloading game
   $STEAMCMD_DIR/steamcmd.sh \
@@ -76,8 +74,7 @@ echo "
   echo "
   ╔═══════════════════════════════════════════════╗
   ║ Downloading SnowSk337 Map                     ║
-  ╚═══════════════════════════════════════════════╝
-  "
+  ╚═══════════════════════════════════════════════╝"
   echo "Deleting all other maps..."
   rm -rf $GAME_DIR/cstrike/maps/*
 
@@ -96,8 +93,7 @@ fi
 echo "
 ╔═══════════════════════════════════════════════╗
 ║ Building server config                        ║
-╚═══════════════════════════════════════════════╝
-"
+╚═══════════════════════════════════════════════╝"
 cat <<EOF > $GAME_DIR/cstrike/server.cfg
 $CS16_SERVER_PW
 $CS16_SERVER_RCONPW
@@ -123,8 +119,7 @@ EOF
 echo "
 ╔═══════════════════════════════════════════════╗
 ║ Server set with provided values               ║
-╚═══════════════════════════════════════════════╝
-"
+╚═══════════════════════════════════════════════╝"
 printenv | grep CS16
 
 
@@ -134,8 +129,7 @@ printenv | grep CS16
 echo "
 ╔═══════════════════════════════════════════════╗
 ║ Starting SERVER                               ║
-╚═══════════════════════════════════════════════╝
-"
+╚═══════════════════════════════════════════════╝"
 ## Game needs launched in the same directory as hlds_linux
 cd $GAME_DIR
 
