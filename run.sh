@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 echo "
 
@@ -23,15 +24,26 @@ echo "
 
 ## Set default values if none were provided
 ## ==============================================
-[[ -z "$CS16_SERVER_PORT" ]] && CS16_SERVER_PORT="27015"
-[[ -z "$CS16_SERVER_MAXPLAYERS" ]] && CS16_SERVER_MAXPLAYERS="32"
-[[ -z "$CS16_SERVER_MAP" ]] && CS16_SERVER_MAP="awp_snowsk337"
-[[ -z "$CS16_SVLAN" ]] && CS16_SVLAN="0"
-[[ -z "$CS16_SERVER_HOSTNAME" ]] && CS16_SERVER_HOSTNAME="SnowSk337 Server"
-[[ ! -z "$CS16_SERVER_PW" ]] && CS16_SERVER_PW="sv_password $CS16_SERVER_PW"
-[[ ! -z "$CS16_SERVER_RCONPW" ]] && CS16_SERVER_RCONPW="rcon_password $CS16_SERVER_RCONPW"
-[[ -z "$CS16_SERVER_UPDATE_ON_START" ]] && CS16_SERVER_UPDATE_ON_START=false
-[[ ! -z "$CS16_SERVER_FASTDOWNLOAD_URL" ]] && CS16_SERVER_FASTDOWNLOAD_URL="sv_downloadurl \"$CS16_SERVER_FASTDOWNLOAD_URL\""
+CS16_SERVER_PORT="${CS16_SERVER_PORT:-27015}"
+CS16_SERVER_MAXPLAYERS="${CS16_SERVER_MAXPLAYERS:-32}"
+CS16_SERVER_MAP="${CS16_SERVER_MAP:-awp_snowsk337}"
+CS16_SVLAN="${CS16_SVLAN:-0}"
+CS16_SERVER_HOSTNAME="${CS16_SERVER_HOSTNAME:-SnowSk337 Server}"
+CS16_SERVER_UPDATE_ON_START="${CS16_SERVER_UPDATE_ON_START:-false}"
+[[ -n "$CS16_SERVER_PW" ]] && CS16_SERVER_PW="sv_password $CS16_SERVER_PW"
+[[ -n "$CS16_SERVER_RCONPW" ]] && CS16_SERVER_RCONPW="rcon_password $CS16_SERVER_RCONPW"
+[[ -n "$CS16_SERVER_FASTDOWNLOAD_URL" ]] && CS16_SERVER_FASTDOWNLOAD_URL="sv_downloadurl \"$CS16_SERVER_FASTDOWNLOAD_URL\""
+
+## Validate critical variables
+## ==============================================
+if [[ ! "$CS16_SERVER_PORT" =~ ^[0-9]+$ ]]; then
+  echo "Error: CS16_SERVER_PORT must be a valid number"
+  exit 1
+fi
+if [[ ! "$CS16_SERVER_MAXPLAYERS" =~ ^[0-9]+$ ]]; then
+  echo "Error: CS16_SERVER_MAXPLAYERS must be a valid number"
+  exit 1
+fi
 
 
 
@@ -81,6 +93,7 @@ echo "
   MAP_DOWNLOAD_URL="https://raw.githubusercontent.com/netwarlan/map-files/main/compressed/awp_snowsk337.zip"
   wget -q $MAP_DOWNLOAD_URL -O $GAME_DIR/awp_snowsk337.zip
   unzip -o $GAME_DIR/awp_snowsk337.zip -d $GAME_DIR
+  rm -f $GAME_DIR/awp_snowsk337.zip
   echo "awp_snowsk337" > $GAME_DIR/mapcycle.txt
 
 fi

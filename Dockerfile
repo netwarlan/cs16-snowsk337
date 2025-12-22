@@ -1,5 +1,5 @@
 ## Pull our base image
-FROM debian:12-slim
+FROM debian:13-slim
 
 ## Image Information
 LABEL maintainer="Jeff Nelson <jeff@netwar.org>"
@@ -42,14 +42,14 @@ RUN dpkg --add-architecture i386 \
     && useradd -ms /bin/bash $GAME_USER \
 
     ## Set Directory Permissions
-    && chown -R $GAME_USER:$GAMEUSER $GAME_DIR \
-    && chown -R $GAME_USER:$GAMEUSER $STEAMCMD_DIR
+    && chown -R $GAME_USER:$GAME_USER $GAME_DIR \
+    && chown -R $GAME_USER:$GAME_USER $STEAMCMD_DIR
 
 ## Change to our User
 USER $GAME_USER
 
 ## Download SteamCMD
-RUN curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz | tar -xzC $STEAMCMD_DIR \
+RUN curl -sL https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz | tar -xzC $STEAMCMD_DIR \
     && $STEAMCMD_DIR/steamcmd.sh \
         +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
         +quit \
@@ -64,6 +64,10 @@ COPY run.sh $APP_DIR/run.sh
 
 ## Set working directory
 WORKDIR $APP_DIR
+
+## Healthcheck to verify server is running
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD pgrep -f hlds_linux || exit 1
 
 ## Start the run script
 CMD ["bash", "run.sh"]
