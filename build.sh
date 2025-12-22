@@ -1,3 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
+set -e
 
-docker build -t ghcr.io/netwarlan/cs16-snowsk337 .
+docker build -t ghcr.io/netwarlan/cs16-snowsk337 "$@" .
