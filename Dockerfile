@@ -21,26 +21,23 @@ RUN dpkg --add-architecture i386 \
     && apt install -y \
         curl \
         lib32gcc-s1 \
-        lib32ncurses5-dev \
+        lib32ncurses-dev \
         lib32stdc++6 \
         lib32z1 \
-        libtinfo5 \
+        libtinfo6 \
         libc6 \
         zlib1g \
         libsdl2-2.0-0 \
-        libcurl3-gnutls:i386 \
+        libcurl3t64-gnutls:i386 \
         wget \
         unzip \
     && apt clean \
     && rm -rf /var/tmp/* /var/lib/apt/lists/* /tmp/* \
-
     ## Create Directory Structure
     && mkdir -p $GAME_DIR \
     && mkdir -p $STEAMCMD_DIR \
-
     ## Create our User
     && useradd -ms /bin/bash $GAME_USER \
-
     ## Set Directory Permissions
     && chown -R $GAME_USER:$GAME_USER $GAME_DIR \
     && chown -R $GAME_USER:$GAME_USER $STEAMCMD_DIR
@@ -53,7 +50,6 @@ RUN curl -sL https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar
     && $STEAMCMD_DIR/steamcmd.sh \
         +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
         +quit \
-
     ## Create symlinks and appdata for Steam
     && mkdir -p ~/.steam/sdk32 \
     && ln -s $GAME_DIR/steamclient.so ~/.steam/sdk32/steamclient.so \
