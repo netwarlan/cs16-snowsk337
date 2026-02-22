@@ -24,20 +24,24 @@ RUN dpkg --add-architecture i386 \
         lib32ncurses-dev \
         lib32stdc++6 \
         lib32z1 \
-        libtinfo6 \
         libc6 \
-        zlib1g \
-        libsdl2-2.0-0 \
         libcurl3t64-gnutls:i386 \
-        wget \
+        libncurses6 \
+        libsdl2-2.0-0 \
+        libtinfo6 \
         unzip \
+        wget \
+        zlib1g \
     && apt clean \
     && rm -rf /var/tmp/* /var/lib/apt/lists/* /tmp/* \
+    \
     ## Create Directory Structure
     && mkdir -p $GAME_DIR \
     && mkdir -p $STEAMCMD_DIR \
+    \
     ## Create our User
     && useradd -ms /bin/bash $GAME_USER \
+    \
     ## Set Directory Permissions
     && chown -R $GAME_USER:$GAME_USER $GAME_DIR \
     && chown -R $GAME_USER:$GAME_USER $STEAMCMD_DIR
@@ -50,10 +54,11 @@ RUN curl -sL https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar
     && $STEAMCMD_DIR/steamcmd.sh \
         +login $STEAMCMD_USER $STEAMCMD_PASSWORD $STEAMCMD_AUTH_CODE \
         +quit \
+    \
     ## Create symlinks and appdata for Steam
     && mkdir -p ~/.steam/sdk32 \
-    && ln -s $GAME_DIR/steamclient.so ~/.steam/sdk32/steamclient.so \
-    && echo '10' > $GAME_DIR/steam_appid.txt
+    && ln -s $STEAMCMD_DIR/linux32/steamclient.so ~/.steam/sdk32/steamclient.so \
+    && echo "$STEAMCMD_APP" > $GAME_DIR/steam_appid.txt
 
 ## Copy our run script into the image
 COPY run.sh $APP_DIR/run.sh
