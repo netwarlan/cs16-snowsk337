@@ -19,7 +19,7 @@ jobs:
       skipped: ${{ steps.version.outputs.skipped }}
       changelog: ${{ steps.version.outputs.changelog }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Fix git ownership for Docker actions
@@ -48,7 +48,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Create release
