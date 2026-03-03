@@ -1,7 +1,8 @@
 # Counter-Strike 1.6 | SnowSK337
 
-[![Docker Build](https://img.shields.io/github/actions/workflow/status/netwarlan/cs16-snowsk337/docker-publish.yml?label=build)](https://github.com/netwarlan/cs16-snowsk337/actions)
-[![License](https://img.shields.io/github/license/netwarlan/cs16-snowsk337)](LICENSE)
+[![Build](https://img.shields.io/github/actions/workflow/status/netwarlan/cs16-snowsk337/build.yml)](https://github.com/netwarlan/cs16-snowsk337/actions)
+[![Release](https://img.shields.io/github/v/release/netwarlan/cs16-snowsk337)](https://github.com/netwarlan/cs16-snowsk337/releases)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/QtqKW9xvzK)
 
 The following repo contains the source files for building a Counter-Strike 1.6 Server with loading of the famous AMP_SNOWSk337 map.
 
