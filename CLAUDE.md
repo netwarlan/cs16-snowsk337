@@ -30,7 +30,7 @@ First run **must** set `CS16_SERVER_UPDATE_ON_START=true` to download game files
 Three files make up the entire project:
 
 - **`Dockerfile`** — Debian 13-slim base, installs i386 libraries (CS 1.6 is 32-bit), sets up SteamCMD, creates non-root `steam` user, symlinks `~/.steam/sdk32`
-- **`run.sh`** — Entrypoint script: sets env var defaults → validates numeric inputs → optionally updates game via SteamCMD → generates `server.cfg` from env vars → optionally downloads remote config override → launches `hlds_run`
+- **`run.sh`** — Entrypoint script: sets env var defaults → validates numeric inputs → optionally downloads game files only and exits → optionally updates game via SteamCMD → generates `server.cfg` from env vars → optionally downloads remote config override → launches `hlds_run`
 - **`build.sh`** — Thin wrapper around `docker build`
 
 ### SteamCMD Manifest Workaround
@@ -60,6 +60,8 @@ All prefixed with `CS16_`. Key variables and their defaults:
 | `CS16_SVLAN` | 0 | Set to 0 for internet play |
 | `CS16_SERVER_UPDATE_ON_START` | false | Must be true on first run |
 | `CS16_SERVER_VALIDATE_ON_START` | false | Adds `validate` flag to SteamCMD |
+| `CS16_SERVER_UPDATE_ONLY_THEN_STOP` | false | Download game files then exit without starting server |
+| `CS16_SERVER_VALIDATE_ONLY_THEN_STOP` | false | Validate game files then exit without starting server |
 | `CS16_SERVER_PW` | (unset) | Only written to config if set |
 | `CS16_SERVER_RCONPW` | (unset) | Only written to config if set |
 | `CS16_SERVER_FASTDOWNLOAD_URL` | (unset) | Sets `sv_downloadurl` if set |
@@ -73,7 +75,7 @@ Three-job GitHub Actions workflow (`.github/workflows/build.yml`):
 2. **build** — builds and pushes Docker image to GHCR with tags: branch name, `latest` (on main), git SHA, and semantic version (when available)
 3. **release** — creates a GitHub release with changelog when a new version is calculated
 
-Triggers on push to `main`, PRs to `main`, and manual dispatch. PRs build but don't push. Uses conventional commits for version bumps: `fix:` → patch, `feat:` → minor, `BREAKING CHANGE:` → major. Non-conventional commits also bump patch (`bump-patch-on-unknown: true`).
+Triggers on push to `main` and manual dispatch. Uses conventional commits for version bumps: `fix:` → patch, `feat:` → minor, `BREAKING CHANGE:` → major. Non-conventional commits also bump patch (`bump-patch-on-unknown: true`).
 
 ## Conventions
 
